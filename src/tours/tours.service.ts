@@ -1,40 +1,57 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
-import { readFileSync } from 'fs';
-const selectTour = <T extends { slug: string; id: number }>(
-  toursCollection: Array<T>,
-  id: number | string,
-) => {
-  console.log(id);
-  return toursCollection.find((el) => String(el.id) === id || el.slug === id);
-};
-
-const tours = JSON.parse(
-  readFileSync(`${__dirname}/../../dev-data/data/tours-data.json`).toString(),
-);
-
+import { InjectModel } from '@nestjs/mongoose';
+import { Tours, ToursDocument } from 'schemas/tours.schema';
+import { Model } from 'mongoose';
 @Injectable()
 export class ToursService {
-  create(createTourDto: CreateTourDto) {
-    return 'This action adds a new tour';
+  constructor(
+    @InjectModel(Tours.name)
+    private tourModel: Model<ToursDocument>,
+  ) {}
+
+  async create(createTourDto: CreateTourDto): Promise<Tours> {
+    const newTour = new this.tourModel(createTourDto);
+    return newTour.save();
   }
 
-  findAll() {
-    return {
-      tours,
-    };
+  async findAll() {
+    const tours = await this.tourModel.find();
+    if (!tours || !tours.length) {
+      throw new NotFoundException('Tours data not found');
+    }
+    return tours;
   }
 
-  findOne(id: string) {
-    return selectTour(tours, id) || null;
+  async findOne(id: string) {
+    const tour = await this.tourModel.findById(id);
+    if (!tour) {
+      throw new NotFoundException('Tour not found');
+    }
+    return tour;
   }
 
-  update(id: string, updateTourDto: UpdateTourDto) {
-    return `This action updates a #${id} tour`;
+  async update(id: string, updateTourDto: UpdateTourDto) {
+    const existingTour = await this.tourModel.findByIdAndUpdate(
+      id,
+      updateTourDto,
+      { new: true },
+    );
+
+    if (!existingTour) {
+      throw new NotFoundException(`Tour ${id} not found`);
+    }
+
+    return existingTour;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} tour`;
+  async remove(id: string) {
+    const deletedTour = await this.tourModel.findByIdAndDelete(id);
+    if (!deletedTour) {
+      throw new NotFoundException('Tour not found');
+    }
+
+    return deletedTour;
   }
 }

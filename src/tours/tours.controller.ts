@@ -16,18 +16,18 @@ export class ToursController {
   constructor(private readonly toursService: ToursService) {}
 
   @Post()
-  create(@Body() createTourDto: CreateTourDto) {
-    return this.toursService.create(createTourDto);
+  async create(@Body() createTourDto: CreateTourDto) {
+    return await this.toursService.create(createTourDto);
   }
 
   @Get()
-  findAll() {
-    return this.toursService.findAll();
+  async findAll() {
+    return await this.toursService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.toursService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.toursService.findOne(id);
   }
 
   @Patch(':id')
