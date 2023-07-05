@@ -2,7 +2,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Module } from '@nestjs/common';
 import { ToursService } from './tours.service';
 import { ToursController } from './tours.controller';
-import { Tours, ToursSchema } from 'schemas/tours.schema';
+import { Tours, ToursSchema } from './tours.schema';
 
 @Module({
   controllers: [ToursController],

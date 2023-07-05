@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Tours, ToursDocument } from 'schemas/tours.schema';
+import { Tours, ToursDocument } from './tours.schema';
 import { Model } from 'mongoose';
 @Injectable()
 export class ToursService {

@@ -15,34 +15,63 @@ type StartLocation = {
 
 @Schema()
 export class Tours {
-  @Prop({ required: [true, 'A tour must have a name'], unique: true })
+  @Prop({
+    required: [true, 'A tour must have a name'],
+    unique: true,
+    trim: true,
+  })
   name: string;
 
-  @Prop()
-  slug: string;
+  @Prop({ required: [true, 'A tour must have a duration'] })
+  duration: number;
+
+  @Prop({ required: [true, 'A tour must have a group size'] })
+  maxGroupSize: number;
+
+  @Prop({ required: [true, 'A tour must have a difficulty'] })
+  difficulty: string;
+
+  @Prop({
+    default: 0,
+  })
+  ratingsQuantity: number;
+
+  @Prop({
+    default: 4.5,
+  })
+  ratingsAverage: number;
 
   @Prop({ required: [true, 'A tour must have a price'] })
   price: number;
 
   @Prop()
+  priceDiscount: number;
+
+  @Prop({ trim: true })
+  summary: string;
+
+  @Prop({ required: [true, 'A tour must have a description'] })
   description: string;
 
-  @Prop()
-  image: string;
-
   @Prop({
-    default: 0,
+    required: [true, 'A tour must have a image cover'],
   })
-  rating: number;
+  imageCover: string;
 
   @Prop()
-  duration: number;
+  images: [string];
+
+  @Prop({ default: Date.now() })
+  createdAt: Date;
+
+  @Prop({})
+  updatedAt: Date;
 
   @Prop()
-  maxGroupSize: number;
+  startDates: [Date];
 
   @Prop()
-  difficulty: string;
+  slug: string;
 
   @Prop({ type: {} as StartLocation })
   startLocation: {
